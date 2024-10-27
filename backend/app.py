@@ -159,4 +159,6 @@ def check_session():
 # app = vercel_wsgi.make_wsgi_app(app)
 
 if __name__ == "__main__":
-    app.run(debug=True, port=int(os.environ.get('PORT', 5000)))
+    port = os.environ.get('PORT', 6000)
+    print('port - ' + str(port))
+    app.run(debug=True, port=int(os.environ.get('PORT', 6000)))
