@@ -3,6 +3,7 @@ from flask import session
 from bson.objectid import ObjectId
 from flask_cors import CORS
 from pymongo import MongoClient
+import os
 # import vercel_wsgi
 
 
@@ -158,4 +159,4 @@ def check_session():
 # app = vercel_wsgi.make_wsgi_app(app)
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=True, port=int(os.environ.get('PORT', 5000)))
