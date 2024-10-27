@@ -1,0 +1,54 @@
+.my-card {
+    box-shadow: var(--shadow);
+    margin: 2rem;
+    border-radius: 0.5rem;
+    min-width: 300px;
+    flex: 1;
+  }
+  
+  .my-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 2rem auto;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  
+  .ant-card-head-title {
+    margin: 0rem !important;
+    font-weight: 500;
+  }
+  
+  .my-card p {
+    margin: 0;
+  }
+  
+  /* New styles for the expenditure card */
+  .expenditure-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Align items to the right */
+  }
+  
+  .expenditure-title,
+  .balance-title {
+    margin: 0; /* Remove margin for the titles */
+  }
+  
+  .expenditure-value,
+  .balance-value {
+    font-size: 1.5rem; /* Optional: Make the expenditure and balance values larger */
+    margin: 0; /* Remove margin */
+  }
+  .income-card{
+    align-items: center; 
+    display: flex;
+    flex-direction: column;
+    padding: 15px 15px;
+     /* Optional: Make the expenditure and balance values larger */
+    margin: 0; /* Remove margin */
+  }
+  .card-value{
+    font-size: 1.5rem;
+  }
