@@ -11,7 +11,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 
 app = Flask(__name__)
-CORS(app, supports_credentials=True)  # Adjust to your front-end URL
+CORS(app, resources={r"/*": {"origins": "*"}})  # Adjust to your front-end URL
 
 
 app.secret_key = "verysecret"
