@@ -12,7 +12,10 @@ from werkzeug.security import generate_password_hash, check_password_hash
 app = Flask(__name__)
 
 # Replace 'http://localhost:3000' with your frontend origin
-CORS(app, resources={r"/*": {"origins": ["http://localhost:3000", "https://financely-backend.onrender.com"]}}, supports_credentials=True)
+CORS(app, resources={r"/*": {"origins": [
+        "http://localhost:3000",  # Local frontend
+        "https://financely-frontend.onrender.com"  # Deployed frontend
+    ]}}, supports_credentials=True)
 
 
 
