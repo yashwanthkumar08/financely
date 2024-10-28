@@ -4,6 +4,7 @@ from bson.objectid import ObjectId
 from flask_cors import CORS
 from pymongo import MongoClient
 import os
+# import vercel_wsgi
 
 
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -11,7 +12,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 app = Flask(__name__)
 
 # Replace 'http://localhost:3000' with your frontend origin
-CORS(app, resources={r"/*": {"origins": ["http://localhost:3000"]}}, supports_credentials=True)
+CORS(app, resources={r"/*": {"origins": ["http://localhost:3000", "https://financely-backend.onrender.com"]}}, supports_credentials=True)
 
 
 
@@ -152,18 +153,20 @@ def edit_transaction():
         return jsonify({"message": "No changes made or transaction not found"}), 404
 
 
-# @app.route("/check-session", methods=["GET"])
-# def check_session():
-#     if "user_email" in session:
-#         print(f"Session check successful for user: {session['user_email']}")
-#         return jsonify({"status": "success", "user_email": session["user_email"]}), 200
-#     else:
-#         print("Session check failed: User not logged in.")
-#         return jsonify({"status": "error", "message": "User not logged in."}), 401
+@app.route("/check-session", methods=["GET"])
+def check_session():
+    if "user_email" in session:
+        print(f"Session check successful for user: {session['user_email']}")
+        return jsonify({"status": "success", "user_email": session["user_email"]}), 200
+    else:
+        print("Session check failed: User not logged in.")
+        return jsonify({"status": "error", "message": "User not logged in."}), 401
 
 
 # app = vercel_wsgi.make_wsgi_app(app)
 
 if __name__ == "__main__":
+    # port = os.environ.get('PORT', 6000)
+    # print('port - ' + str(port))
     app.run(debug=True, port=5000,host="0.0.0.0")
-    
+    # app.run(debug=True,port=5000)
