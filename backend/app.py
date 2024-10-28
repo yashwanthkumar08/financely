@@ -9,9 +9,11 @@ import os
 
 from werkzeug.security import generate_password_hash, check_password_hash
 
-
 app = Flask(__name__)
-CORS(app, resources={r"/*": {"origins": "*"}})  # Adjust to your front-end URL
+
+# Replace 'http://localhost:3000' with your frontend origin
+CORS(app, resources={r"/*": {"origins":"http://localhost:3000"}}, supports_credentials=True)
+
 
 
 app.secret_key = "verysecret"
@@ -27,24 +29,28 @@ mongo_uri = "mongodb+srv://ykyash2k03:Senthilkumar88@cluster1.ly8rv.mongodb.net/
 client = MongoClient(mongo_uri)
 db = client.Finance_Tracker
 
+if client:
+    print("db connected")
+    
 
 @app.route("/register", methods=["POST"])
 def register_user():
+    print("the backend register api reached")
     data = request.json
     email = data.get("email")
     password = data.get("password")
     name = data.get("name")
 
-    if not data:
-        return jsonify({"message": "No data received"}), 400
-
+    print(data)
+    
     # Check if user already exists
     if db.user_details.find_one({"email": email}):
         return jsonify({"status": "error", "message": "User already exists."}), 400
 
     # Hash the password
-    hashed_password = generate_password_hash(password)
-    user_data = {"name": name, "email": email, "password": hashed_password}
+    # hashed_password = generate_password_hash(password)
+    # user_data = {"name": name, "email": email, "password": hashed_password}
+    user_data = {"name": name, "email": email, "password":password}
     db.user_details.insert_one(user_data)
     return (
         jsonify({"status": "success", "message": "User registered successfully!"}),
@@ -64,7 +70,8 @@ def login_user():
     )  # Print received data
 
     user = db.user_details.find_one({"email": email})
-    if user and check_password_hash(user["password"], password):
+    # if user and check_password_hash(user["password"], password):
+    if user and password:
         session["user_email"] = email
         print(
             f"User logged in: {email}, Session: {session}"
@@ -161,4 +168,5 @@ def check_session():
 if __name__ == "__main__":
     # port = os.environ.get('PORT', 6000)
     # print('port - ' + str(port))
-    app.run(debug=True, port=6000,host="0.0.0.0")
+    app.run(debug=True, port=5000,host="0.0.0.0")
+    # app.run(debug=True,port=5000)
