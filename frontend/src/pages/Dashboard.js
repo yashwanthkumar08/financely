@@ -7,6 +7,7 @@ import TransactionsTable from "../components/TransactionsTable";
 import EditModal from "../Modals/editModal";
 import ChartComponent from "../components/Charts";
 import NoTransactions from "../components/NoTransactions";
+import { host } from "../api";
 
 const Dashboard = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -27,10 +28,13 @@ const Dashboard = () => {
 
   const checkSession = async () => {
     try {
-      const response = await fetch("http://127.0.0.1:5000/check-session", {
-        method: "GET",
-        credentials: "include", // Include credentials
-      });
+      const response = await fetch(
+        `https://financely-backend.onrender.com/check-session`,
+        {
+          method: "GET",
+          credentials: "include", // Include credentials
+        }
+      );
 
       if (response.ok) {
         const data = await response.json();
@@ -69,7 +73,7 @@ const Dashboard = () => {
     try {
       let email = localStorage.getItem("userEmail");
       const response = await fetch(
-        `http://127.0.0.1:5000/get-transactions?email=${email}`,
+        `${process.env.REACT_APP_BASE_URL}/get-transactions?email=${email}`,
         {
           method: "GET",
           headers: {
@@ -127,14 +131,17 @@ const Dashboard = () => {
     console.log("transaction date is " + newTransaction.date);
 
     try {
-      const response = await fetch("http://127.0.0.1:5000/add-transaction", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          credentials: "include", // Ensure that cookies are sent with the request
-        },
-        body: JSON.stringify(newTransaction),
-      });
+      const response = await fetch(
+        `${process.env.REACT_APP_BASE_URL}/add-transaction`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            credentials: "include", // Ensure that cookies are sent with the request
+          },
+          body: JSON.stringify(newTransaction),
+        }
+      );
 
       if (response.ok) {
         const result = await response.json();
@@ -149,34 +156,41 @@ const Dashboard = () => {
     }
   };
 
-  let sortedTransactions=transactions.sort((a, b) => {
-      return new Date(a.date) - new Date(b.date);
-    })
+  let sortedTransactions = transactions.sort((a, b) => {
+    return new Date(a.date) - new Date(b.date);
+  });
   return (
     <>
-    <div>
-      <Header showLogout={true} />
-      <Cards
-        showModal={showModal}
-        totalIncome={totalIncome} // Pass total income to Cards
-        totalExpenditure={totalExpenditure}
-        totalBalance={totalBalance} // Pass total expenditure to Cards
-      />
-      {transactions.length!=0?<ChartComponent sortedTransactions={sortedTransactions}/>: <NoTransactions />}
-      <AddModal
-        isModalVisible={isModalVisible}
-        handleModalCancel={handleModalCancel}
-        onFinish={onFinish}
-        totalIncome={totalIncome}
-      />
-      <div className="table-heading" style={{display:'flex',justifyContent:'center'}}>
-        <h1>Transactions</h1>
+      <div>
+        <Header showLogout={true} />
+        <Cards
+          showModal={showModal}
+          totalIncome={totalIncome} // Pass total income to Cards
+          totalExpenditure={totalExpenditure}
+          totalBalance={totalBalance} // Pass total expenditure to Cards
+        />
+        {transactions.length != 0 ? (
+          <ChartComponent sortedTransactions={sortedTransactions} />
+        ) : (
+          <NoTransactions />
+        )}
+        <AddModal
+          isModalVisible={isModalVisible}
+          handleModalCancel={handleModalCancel}
+          onFinish={onFinish}
+          totalIncome={totalIncome}
+        />
+        <div
+          className="table-heading"
+          style={{ display: "flex", justifyContent: "center" }}
+        >
+          <h1>Transactions</h1>
+        </div>
+        <TransactionsTable
+          transactions={transactions}
+          fetchTransactions={fetchTransactions}
+        />
       </div>
-      <TransactionsTable
-        transactions={transactions}
-        fetchTransactions={fetchTransactions}
-      />
-    </div>
     </>
   );
 };

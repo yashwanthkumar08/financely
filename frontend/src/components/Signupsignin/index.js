@@ -5,6 +5,7 @@ import Button from "../Button";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import SignupSigninButton from "../SignupLoginButton";
+import { host } from "../../api";
 
 function SignupSigninComponent() {
   const [name, setName] = useState("");
@@ -16,12 +17,13 @@ function SignupSigninComponent() {
 
   console.log(name, email, password);
 
+  console.log("Base URL:", process.env.REACT_APP_BASE_URL);
+
   function validateEmail(email) {
     const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return re.test(String(email).toLowerCase());
   }
 
-  // Function to handle sign up
   // Function to handle sign up
   async function handleSignup() {
     console.log("Signup function called"); // Check if this logs when the form is submitted
@@ -52,17 +54,31 @@ function SignupSigninComponent() {
       return;
     }
 
+    // console.log("Backend URL:", host);
+    // const apiUrl = `${process.env.REACT_APP_BASE_URL}/register`;
+    const apiUrl = `${
+      process.env.REACT_APP_BASE_URL || "Fallback URL"
+    }/register`;
+    console.log("API URL:", apiUrl);
+
+    console.log("Available environment variables:", process.env);
+    console.log("API URL:", apiUrl); // Log the API URL
     // Send signup data to backend API
     try {
-      const response = await fetch("http://127.0.0.1:5000/register", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-        body: JSON.stringify({ name, email, password }),
-      });
+      const response = await fetch(
+        `${process.env.REACT_APP_BASE_URL}/register`,
+        {
+          // mode: 'no-cors',
+          method: "POST",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ name, email, password }),
+        }
+      );
 
+      console.log("Response Status:", response.status);
       const data = await response.json();
 
       if (response.ok) {
@@ -86,7 +102,7 @@ function SignupSigninComponent() {
     }
 
     try {
-      const response = await fetch("http://127.0.0.1:5000/login", {
+      const response = await fetch(`${process.env.REACT_APP_BASE_URL}/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
