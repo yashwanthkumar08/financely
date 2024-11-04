@@ -1,12 +1,12 @@
 import React from "react";
 import "./styles.css";
 
-function Button({ text, onClick, blue }) {
+function Button({ text, onClick }) { // Removed the blue prop
   return (
     <button
-      className={blue ? "btn btn-blue" : "btn"}
+      className="btn" // Apply the btn class here
       onClick={onClick}
-      type="button" // Set type to button if you want to handle it with onClick
+      type="button"
     >
       {text}
     </button>

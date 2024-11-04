@@ -1,4 +1,4 @@
-import { Button, Input, message, Radio, Select, Table } from "antd";
+import { Button, Input, message, Select, Table } from "antd";
 import React, { useState } from "react";
 import { unparse } from "papaparse";
 import EditModal from "../../Modals/editModal"; // Import the EditModal
@@ -10,8 +10,8 @@ function TransactionsTable({ transactions, fetchTransactions }) {
   const [isEditModalVisible, setIsEditModalVisible] = useState(false); // Manage modal visibility
   const [currentTransaction, setCurrentTransaction] = useState(null); // Store the current transaction to edit
   const [typeFilter, setTypeFilter] = useState("");
-  const { Option } = Select;
   const [sortKey, setSortKey] = useState("");
+  const { Option } = Select;
 
   const columns = [
     {
@@ -44,7 +44,12 @@ function TransactionsTable({ transactions, fetchTransactions }) {
       key: "actions",
       render: (text, record) => (
         <>
-          <Button onClick={() => handleEdit(record)}>Edit</Button>
+          <Button
+            onClick={() => handleEdit(record)}
+            style={{ marginRight: "8px" }}
+          >
+            Edit
+          </Button>
           <Button onClick={() => handleDelete(record._id)}>Delete</Button>
         </>
       ),
@@ -83,17 +88,20 @@ function TransactionsTable({ transactions, fetchTransactions }) {
   const handleEditSubmit = async (values) => {
     values.date = values.date.toISOString().split("T")[0]; // Convert date to YYYY-MM-DD
 
-    const response = await fetch(`http://127.0.0.1:5000/edit-transactions`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        ...currentTransaction,
-        ...values,
-        transaction_id: currentTransaction._id,
-      }), // Send the transaction ID
-    });
+    const response = await fetch(
+      `${process.env.REACT_APP_BASE_URL}/edit-transactions`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          ...currentTransaction,
+          ...values,
+          transaction_id: currentTransaction._id,
+        }), // Send the transaction ID
+      }
+    );
 
     if (response.ok) {
       fetchTransactions(); // Refetch the transactions after editing
@@ -110,19 +118,32 @@ function TransactionsTable({ transactions, fetchTransactions }) {
     );
     if (!confirmDelete) return;
 
-    const response = await fetch(`http://127.0.0.1:5000/delete-transactions`, {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ transaction_id: transactionId }), // Send the transaction ID
-    });
+    const response = await fetch(
+      `${process.env.REACT_APP_BASE_URL}/delete-transactions`,
+      {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ transaction_id: transactionId }), // Send the transaction ID
+      }
+    );
 
     if (response.ok) {
       message.success("Transaction deleted successfully!");
       fetchTransactions();
     } else {
       message.error("Failed to delete transaction.");
+    }
+  };
+
+  const handleFilterAndSortChange = (value) => {
+    if (value === "income" || value === "expenditure") {
+      setTypeFilter(value);
+      setSortKey(""); // Reset sort when changing type filter
+    } else {
+      setSortKey(value);
+      setTypeFilter(""); // Reset filter when changing sort option
     }
   };
 
@@ -144,39 +165,33 @@ function TransactionsTable({ transactions, fetchTransactions }) {
   return (
     <div className="transactions-container">
       <div className="transactions-header">
+
         <div className="input-flex">
-          <img src={searchImg} width="16" alt="Search" />
+          {/* <img src={searchImg} width="16" alt="Search" /> */}
           <Input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search"
           />
         </div>
-
+        <div className="filter-sort">
         <Select
           className="select-input"
-          onChange={(value) => setTypeFilter(value)}
-          value={typeFilter}
-          placeholder="Filter by Type"
+          onChange={handleFilterAndSortChange}
+          placeholder="Filter or Sort"
           allowClear
         >
-          <Option value="">All</Option>
+          <Option value="">All Types</Option>
           <Option value="income">Income</Option>
           <Option value="expenditure">Expense</Option>
+          <Option value="date">Sort by Date</Option>
+          <Option value="amount">Sort by Amount</Option>
         </Select>
+        </div>
+        
       </div>
 
       <div className="transactions-controls">
-        <Radio.Group
-          className="input-radio"
-          onChange={(e) => setSortKey(e.target.value)}
-          value={sortKey}
-        >
-          <Radio.Button value="">No Sort</Radio.Button>
-          <Radio.Button value="date">Sort by Date</Radio.Button>
-          <Radio.Button value="amount">Sort by Amount</Radio.Button>
-        </Radio.Group>
-
         <div className="export-buttons">
           <button className="export-button" onClick={exportCSV}>
             Export to CSV
@@ -184,11 +199,14 @@ function TransactionsTable({ transactions, fetchTransactions }) {
         </div>
       </div>
 
-      <Table
-        dataSource={sortedTransactions}
-        columns={columns}
-        style={{ width: "100%" }} // Adjust '200px' based on your layout
-      />
+
+      <div className="table-container">
+        <Table
+          dataSource={sortedTransactions}
+          columns={columns}
+          style={{ width: "100%" }}
+        />
+      </div>
 
       {/* Render the EditModal */}
       <EditModal

@@ -1,0 +1,46 @@
+.charts-wrapper {
+    display: flex;
+    justify-content:center;
+    width: 100%;
+    max-width: 1370px; /* This can be adjusted based on your layout */
+    padding: 0.2rem 0.2rem;
+    box-sizing: border-box;
+    background-color: #1b1b1b;
+    margin: 0 auto;
+    
+    gap: 10px;
+    height: 100%; /* Set the wrapper height to make charts occupy available space */
+}
+
+.chart-container, 
+.pie-chart-container {
+    flex: 1; /* Allow both containers to take equal space */
+    height: 250px !important; /* Set a fixed height */
+    padding: 1rem;
+    box-sizing: border-box;
+    border-radius: 0.5rem;
+    background-color: #28282a;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 0.5rem; /* Add a small gap between the charts */
+    /* margin-bottom: 10px; */
+}
+  
+.line-chart,.pie-chart{
+display: flex;
+flex-direction: column;
+margin-bottom: 10px;
+}
+  @media (max-width: 768px) {
+    .charts-wrapper {
+      flex-direction: column; /* Stack charts on smaller screens */
+      justify-content: center; /* Center charts in column layout */
+    }
+  
+    .chart-container, .pie-chart-container {
+      width: 100%; /* Full width for small screens */
+      margin: 0.5rem 0;
+    }
+  }
+  

@@ -1,123 +1,223 @@
- .input-radio {
-    display: flex;
-    gap: 0.5rem; 
-  }
-  
-  .ant-table-tbody > tr > td {
-    padding: 8px; /* Decrease this value to reduce spacing */
-  }
-  
-  /* Adjust the padding of table headers */
-  .ant-table-thead > tr > th {
-    padding: 8px; /* Decrease this value to reduce spacing */
-  }
-  
-  .input-radio .ant-radio-button-wrapper {
-    display: flex;
-    justify-content: center; 
-    align-items: center; 
-    white-space: nowrap; 
-    text-overflow: ellipsis; 
-    overflow: hidden; 
-    padding: 0.5rem; 
-    min-width: 120px; 
-    flex-shrink: 0; 
-    border-radius: 5px;
-   
-  }
-   
+.input-radio {
+  display: flex;
+  gap: 0.5rem;
+}
 
-  .transactions-container {
-    width: 90%;
-    margin: auto;
-    padding: 1rem;
-  }
-  
-  .transactions-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 1rem;
-  }
-  
-  .input-flex {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-  }
-  
-  .select-input {
-    width: 150px;
-  }
-  
-  .transactions-controls {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 1rem;
-  }
-  
-  .input-radio {
-    display: flex;
-    justify-content: center;
-  }
-  
+.ant-table-tbody > tr:nth-child(odd) > td {
+  background-color: #1b1b1b !important; /* Dark gray for odd rows */
+  color: #ffffff; /* White text for better contrast */
+  cursor: pointer;
+  padding: 30px;
+  font-weight: bold;
+  border-bottom: none !important; 
+}
 
+/* Even Rows */
+.ant-table-tbody > tr:nth-child(even) > td {
+  background-color: #28282a !important; /* Slightly lighter dark gray for even rows */
+  color: #ffffff; /* White text for better contrast */
+  cursor: pointer;
+  padding: 30px;
+  font-weight: bold;
+  border-bottom: none !important; 
+}
+
+
+/* 
+.ant-table-tbody > tr:hover > td {
+  background-color: unset !important;
+  color: inherit; 
+} */
+
+
+.ant-table-thead > tr > th {
+  padding: 5px; /* Decrease this value to reduce spacing */
+  background-color: #0b0b0b !important;
+  color: #878787 !important;
+  border-top: 1px solid #eee;
+  border-bottom: none !important; 
+  border-top:none !important;
+  border-right: none !important;
+  border-left: none !important;
+  font-weight:bold;
+  font-size:medium;
+  text-transform: uppercase;
+}
+
+.input-radio .ant-radio-button-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  padding: 0.5rem;
+  min-width: 120px;
+  flex-shrink: 0;
+  border-radius: 5px;
+}
+
+.transactions-container {
+  width: 90%;
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.transactions-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  border-radius: 5px;
+  background-color: #28282a;
+  padding: 15px;
+  width: 100%;
+  box-sizing: border-box;
+  gap: 50px;
+}
+
+.select-input {
+  /* width: 30%; */
+  width: 150px;
+  margin-right: 10;
+  display: flex;
+  align-items: center;
+  /* box-shadow: 0px 0px 30px 8px rgba(227, 227, 227, 0.75); */
+  border-radius: 0.5rem !important;
+  padding: 0.2rem 0.5rem;
+}
+
+.select-input > div {
+  border: 0px solid #fff !important;
+}
+
+/* .input-flex {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+  border-radius: 0.5rem;
+  padding: 0rem 0.5rem;
+
+} */
+.input-flex{
+  display: flex;
+  width: 100%;
+  /* gap: 0.5rem; */
+  /* justify-content: flex-start; */
+}
+.input-flex input {
+  padding: 0.5rem;
+  border: 0;
+
+}
+
+.input-flex input:focus {
+  outline: none;
+}
+
+.transactions-controls {
+  display: flex;
+  justify-content: end;
+  align-items: center;
+  margin-bottom: 1rem;
+
+}
+
+.input-radio {
+  display: flex;
+  justify-content: center;
+}
+
+.btn {
+  width: 100px;
+  height: 40px;
+  background-color: #1890ff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.btn:hover {
+  background-color: #0073e6;
+}
+
+/* .table {
+  width: 100%;
+  margin-top: 1rem;
+} */
+
+.table th,
+.table td {
+  padding: 1rem;
+  text-align: left;
+  border-bottom: none !important;
   
-  .btn {
-    width: 100px;
-    height: 40px;
-    background-color: #1890ff;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
+}
+.export-buttons {
+  display: flex;
+  justify-content: flex-end; /* Align the button to the right */
+  margin-top: 10px;
+  gap: 1rem;
+}
+
+.export-button {
+  background-color: #28282a; /* Green color for the button */
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 10px 10px; /* Adjust padding to make it smaller */
+  font-size: 14px; /* Adjust font size */
+  cursor: pointer;
+  transition: background-color 0.3s ease; /* Smooth hover effect */
+  margin-left: 10px;
+}
+
+
+
+
+.export-button:focus {
+  outline: none; /* Remove the default button outline */
+}
+
+
+.table-container {
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  margin-top: 1rem; /* Space above the table */
+  
+}
+
+/* Responsive adjustments */
+/* Responsive adjustments */
+@media (max-width: 600px) {
+  .table-container {
+    overflow: visible; 
+    margin-right: 100px;
   }
-  
-  .btn:hover {
-    background-color: #0073e6;
-  }
-  
-  .table {
-    width: 100%;
-    margin-top: 1rem;
-  }
-  
+
   .table th,
   .table td {
-    padding: 1rem;
-    text-align: left;
-    border-bottom: 1px solid #eee;
+    padding: 0.5rem; /* Reduce padding */
+    font-size: 12px; /* Adjust font size for smaller screens */
   }
-  .export-buttons {
-    display: flex;
-    justify-content: flex-end; /* Align the button to the right */
-    margin-top: 10px;
-    gap: 1rem;
+
+  .transactions-container {
+    padding: 0 10px; /* Add padding to the container */
+    width: 100%; /* Ensure full width */
   }
-  
-  .export-button {
-    background-color: #4CAF50; /* Green color for the button */
-    color: white;
-    border: none;
-    border-radius: 4px;
-    padding: 5px 2px; /* Adjust padding to make it smaller */
-    font-size: 14px; /* Adjust font size */
-    cursor: pointer;
-    transition: background-color 0.3s ease; /* Smooth hover effect */
-    margin-left: 10px;
+
+  .transactions-header {
+    width: 96%; /* Ensure the header takes full width */
   }
-  
-  .export-button:hover {
-    background-color: #45a049; /* Darken the button on hover */
+
+  .transactions-controls{
+    margin-right: 20px;
   }
-  
-  .export-button:active {
-    background-color: #3e8e41; /* Even darker when pressed */
-  }
-  
-  .export-button:focus {
-    outline: none; /* Remove the default button outline */
-  }
-  
-  
+}
+
+

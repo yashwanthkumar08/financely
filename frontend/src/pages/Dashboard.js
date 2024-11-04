@@ -2,12 +2,10 @@ import React, { useState, useEffect } from "react";
 import Header from "../components/header";
 import Cards from "../components/Cards";
 import AddModal from "../Modals/addModal";
-import moment from "moment";
 import TransactionsTable from "../components/TransactionsTable";
-import EditModal from "../Modals/editModal";
 import ChartComponent from "../components/Charts";
 import NoTransactions from "../components/NoTransactions";
-import { host } from "../api";
+import AddButton from "../components/AddButton";
 
 const Dashboard = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -15,6 +13,8 @@ const Dashboard = () => {
   const [totalIncome, setTotalIncome] = useState(0); // State to store total income
   const [totalExpenditure, setTotalExpenditure] = useState(0); // State to store total expenditure
   const [totalBalance, setTotalBalance] = useState(0);
+  const [recentIncome, setRecentIncome] = useState([]);
+  const [recentExpenditure, setRecentExpenditure] = useState([]);
 
   // Function to show the modal
   const showModal = () => {
@@ -26,49 +26,7 @@ const Dashboard = () => {
     setIsModalVisible(false);
   };
 
-  const checkSession = async () => {
-    try {
-      const response = await fetch(
-        `https://financely-backend.onrender.com/check-session`,
-        {
-          method: "GET",
-          credentials: "include", // Include credentials
-        }
-      );
-
-      if (response.ok) {
-        const data = await response.json();
-        console.log("Current session:", data);
-      } else {
-        console.error("Failed to check session:", response.statusText);
-      }
-    } catch (error) {
-      console.error("Network error:", error);
-    }
-  };
-
-  // Function to calculate total income and expenditure
-  const calculateTotals = (transactions) => {
-    let income = 0;
-    let expenditure = 0;
-    let balance = 0;
-    transactions.forEach((transaction) => {
-      // Ensure that you're checking the correct casing of transaction types
-      if (transaction.type === "income") {
-        income += transaction.amount;
-      } else if (transaction.type === "expenditure") {
-        expenditure += transaction.amount;
-      }
-      balance = income - expenditure;
-    });
-
-    setTotalIncome(income);
-    setTotalExpenditure(expenditure);
-    setTotalBalance(balance);
-    console.log(balance); //here we have the balance being calculated
-  };
-
-  // Fetch transactions from the backend
+  // Function to fetch transactions from the backend
   const fetchTransactions = async () => {
     try {
       let email = localStorage.getItem("userEmail");
@@ -86,6 +44,7 @@ const Dashboard = () => {
         const data = await response.json();
         console.log(data);
         setTransactions(data); // Set the fetched data to the transactions state
+        calculateRecentTransactions(data); // Update recent transactions
       } else {
         console.error("Failed to fetch transactions:", response.statusText);
       }
@@ -94,41 +53,75 @@ const Dashboard = () => {
     }
   };
 
+  // Function to calculate total income and expenditure
+  const calculateTotals = (transactions) => {
+    let income = 0;
+    let expenditure = 0;
+
+    transactions.forEach((transaction) => {
+      if (transaction.type === "income") {
+        income += transaction.amount;
+      } else if (transaction.type === "expenditure") {
+        expenditure += transaction.amount;
+      }
+    });
+
+    setTotalIncome(income);
+    setTotalExpenditure(expenditure);
+    setTotalBalance(income - expenditure);
+  };
+
+  // Function to calculate recent income and expenditure
+  const calculateRecentTransactions = (transactions) => {
+    const incomeEntries = transactions
+      .filter((transaction) => transaction.type === "income")
+      .map(({ name, amount, date }) => ({
+        name,
+        amount,
+        date,
+      }))
+      .sort((a, b) => new Date(b.date) - new Date(a.date))
+      .slice(0, 5); // Keep only the last 5 entries
+
+    const expenditureEntries = transactions
+      .filter((transaction) => transaction.type === "expenditure")
+      .map(({ name, tag, amount, date }) => ({
+        name,
+        tag,
+        amount,
+        date,
+      }))
+      .sort((a, b) => new Date(b.date) - new Date(a.date))
+      .slice(0, 5); // Keep only the last 5 entries
+
+    setRecentIncome(incomeEntries);
+    setRecentExpenditure(expenditureEntries);
+  };
+
   // Fetch transactions when the component mounts
   useEffect(() => {
-    const verifySession = async () => {
-      //await checkSession(); // Call your checkSession function
-      await fetchTransactions(); // Fetch transactions after session check
-    };
-
-    verifySession(); // Call the function
+    fetchTransactions(); // Fetch transactions on mount
   }, []);
 
   // Recalculate totals whenever transactions state changes
   useEffect(() => {
     if (transactions.length > 0) {
       calculateTotals(transactions);
-
-      // Calculate totals based on updated transactions
     }
   }, [transactions]); // Trigger whenever transactions state changes
 
   // Function to handle the form submission
-  // Function to handle the form submission
   const onFinish = async (values) => {
     let email = localStorage.getItem("userEmail");
-    console.log("email - " + email);
 
     const newTransaction = {
       type: values.type,
-      // date: moment(values.date).format("YYYY-MM-DD"),
       date: values.date.toISOString().split("T")[0],
       amount: parseFloat(values.amount),
       tag: values.tag || "",
       name: values.name,
       email: email,
     };
-    console.log("transaction date is " + newTransaction.date);
 
     try {
       const response = await fetch(
@@ -137,7 +130,7 @@ const Dashboard = () => {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            credentials: "include", // Ensure that cookies are sent with the request
+            credentials: "include",
           },
           body: JSON.stringify(newTransaction),
         }
@@ -156,40 +149,43 @@ const Dashboard = () => {
     }
   };
 
-  let sortedTransactions = transactions.sort((a, b) => {
-    return new Date(a.date) - new Date(b.date);
-  });
   return (
     <>
-      <div>
+      <div style={{ backgroundColor: "#0b0b0b" }}>
         <Header showLogout={true} />
+        <AddButton text="+ New" onClick={showModal} />
         <Cards
           showModal={showModal}
           totalIncome={totalIncome} // Pass total income to Cards
           totalExpenditure={totalExpenditure}
           totalBalance={totalBalance} // Pass total expenditure to Cards
+          recentIncome={recentIncome}
+          recentExpenditure={recentExpenditure}
         />
-        {transactions.length != 0 ? (
-          <ChartComponent sortedTransactions={sortedTransactions} />
-        ) : (
-          <NoTransactions />
-        )}
+
+        <div
+          className="table-heading"
+          style={{ display: "flex", justifyContent: "center" }}
+        >
+          <h1 style={{color:'white'}}>Transactions</h1>
+        </div>
+
+        <TransactionsTable
+          transactions={transactions}
+          fetchTransactions={fetchTransactions}
+        />
+
         <AddModal
           isModalVisible={isModalVisible}
           handleModalCancel={handleModalCancel}
           onFinish={onFinish}
           totalIncome={totalIncome}
         />
-        <div
-          className="table-heading"
-          style={{ display: "flex", justifyContent: "center" }}
-        >
-          <h1>Transactions</h1>
-        </div>
-        <TransactionsTable
-          transactions={transactions}
-          fetchTransactions={fetchTransactions}
-        />
+        {transactions.length !== 0 ? (
+          <ChartComponent sortedTransactions={transactions} />
+        ) : (
+          <NoTransactions />
+        )}
       </div>
     </>
   );
