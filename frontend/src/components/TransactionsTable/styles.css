@@ -35,7 +35,7 @@
   background-color: #0b0b0b !important;
   color: #878787 !important;
   border-top: 1px solid #eee;
-  border-bottom: none !important; 
+  border-bottom: 1px solid #ccc !important;
   border-top:none !important;
   border-right: none !important;
   border-left: none !important;
@@ -154,7 +154,7 @@
 .table td {
   padding: 1rem;
   text-align: left;
-  border-bottom: none !important;
+  /* border-bottom: 1px solid #ccc !important; */
   
 }
 .export-buttons {
@@ -178,7 +178,6 @@
 
 
 
-
 .export-button:focus {
   outline: none; /* Remove the default button outline */
 }
@@ -192,6 +191,16 @@
   
 }
 
+.table-container .ant-table {
+  border: 2px solid #ccc; /* Adjust color and thickness as needed */
+  border-radius: 8px; /* Optional: add rounded corners */
+}
+/* In your styles.css or corresponding CSS file */
+
+.edit-button{
+  margin-top: 2px;
+  height: 20px;
+}
 /* Responsive adjustments */
 /* Responsive adjustments */
 @media (max-width: 600px) {

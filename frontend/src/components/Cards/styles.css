@@ -119,3 +119,11 @@
   margin-bottom: 10px; /* Space between header and entries */
   color: #8c8c8c;
 }
+
+
+.no-transactions {
+  text-align: center;
+  color: #888;
+  font-style: italic;
+  margin-top: 10px;
+}

@@ -2,7 +2,9 @@ import { Button, Input, message, Select, Table } from "antd";
 import React, { useState } from "react";
 import { unparse } from "papaparse";
 import EditModal from "../../Modals/editModal"; // Import the EditModal
-import searchImg from "../../assets/search.svg";
+import editIcon from "../../assets/edit.png";
+import deleteIcon from "../../assets/delete.png";
+import { Tooltip } from "antd";
 import "./styles.css"; // Link to CSS
 
 function TransactionsTable({ transactions, fetchTransactions }) {
@@ -43,15 +45,24 @@ function TransactionsTable({ transactions, fetchTransactions }) {
       title: "Actions",
       key: "actions",
       render: (text, record) => (
-        <>
-          <Button
-            onClick={() => handleEdit(record)}
-            style={{ marginRight: "8px" }}
-          >
-            Edit
-          </Button>
-          <Button onClick={() => handleDelete(record._id)}>Delete</Button>
-        </>
+        <div style={{ display: "flex", gap: "50px", height: "25px" }}>
+          <Tooltip title="Edit">
+            <img
+            className="edit-button"
+              src={editIcon}
+              alt="edit-icon"
+              onClick={() => handleEdit(record)}
+            />
+          </Tooltip>
+
+          <Tooltip title="Delete">
+            <img
+              src={deleteIcon}
+              alt="delete-icon"
+              onClick={() => handleDelete(record._id)}
+            />
+          </Tooltip>
+        </div>
       ),
     },
   ];
@@ -165,7 +176,6 @@ function TransactionsTable({ transactions, fetchTransactions }) {
   return (
     <div className="transactions-container">
       <div className="transactions-header">
-
         <div className="input-flex">
           {/* <img src={searchImg} width="16" alt="Search" /> */}
           <Input
@@ -175,36 +185,39 @@ function TransactionsTable({ transactions, fetchTransactions }) {
           />
         </div>
         <div className="filter-sort">
-        <Select
-          className="select-input"
-          onChange={handleFilterAndSortChange}
-          placeholder="Filter or Sort"
-          allowClear
-        >
-          <Option value="">All Types</Option>
-          <Option value="income">Income</Option>
-          <Option value="expenditure">Expense</Option>
-          <Option value="date">Sort by Date</Option>
-          <Option value="amount">Sort by Amount</Option>
-        </Select>
+          <Select
+            className="select-input"
+            onChange={handleFilterAndSortChange}
+            placeholder="Filter or Sort"
+            allowClear
+          >
+            <Option value="">All Types</Option>
+            <Option value="income">Income</Option>
+            <Option value="expenditure">Expense</Option>
+            <Option value="date">Sort by Date</Option>
+            <Option value="amount">Sort by Amount</Option>
+          </Select>
         </div>
-        
       </div>
 
       <div className="transactions-controls">
-        <div className="export-buttons">
-          <button className="export-button" onClick={exportCSV}>
-            Export to CSV
-          </button>
-        </div>
+        {transactions && transactions.length > 0 && (
+          <div className="export-buttons">
+            <button className="export-button" onClick={exportCSV}>
+              Export to CSV
+            </button>
+          </div>
+        )}
       </div>
-
 
       <div className="table-container">
         <Table
           dataSource={sortedTransactions}
           columns={columns}
           style={{ width: "100%" }}
+          locale={{
+            emptyText: <span style={{ color: "white" }}>No Data</span>,
+          }}
         />
       </div>
 

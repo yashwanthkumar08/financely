@@ -167,7 +167,7 @@ const Dashboard = () => {
           className="table-heading"
           style={{ display: "flex", justifyContent: "center" }}
         >
-          <h1 style={{color:'white'}}>Transactions</h1>
+          <h1 style={{ color: "white" }}>Transactions</h1>
         </div>
 
         <TransactionsTable
